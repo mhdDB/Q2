@@ -1,0 +1,97 @@
+var admin = require("firebase-admin");
+var serviceAccount = require("./serviceAccountKeys.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+const db = admin.firestore();
+
+//"firebase-admin": "^11.10.1"
+//node ./index.js
+//npm install firebase --save
+//npm init -y
+//mongoimport --jsonArray --db Market1 --collection restaurant2 --file data.json
+
+
+//  update and add
+
+    // const data ={
+    //     id:1,
+    //     name:"karuna",
+    //     Age:26
+    // }
+    // db.collection("employee").doc(data.id.toString()).set(data);
+
+
+    //Retrieve data in terminal
+
+    let customerRef = db.collection("employee");
+    customerRef.get().then((querySnapshot) => {
+        querySnapshot.forEach(document => {
+            console.log(document.data());
+        })
+    })
+
+
+    //create multiple data(batch data)
+
+    // const batch = db.batch();
+    // const employee6 = db.collection("employee").doc("6");
+    // const employee7 = db.collection("employee").doc("7");
+    // const employee8 = db.collection("employee").doc("8");
+    // const employee9 = db.collection("employee").doc("9");
+    // const employee10 = db.collection("employee").doc("10");
+
+    // batch.set(employee6,{id:6,name:"Mala",Age:22});
+    // batch.set(employee7,{id:7,name:"Kamala",Age:28});
+    // batch.set(employee8,{id:8,name:"Jhon",Age:27});
+    // batch.set(employee9,{id:9,name:"Jerry",Age:30});
+    // batch.set(employee10,{id:10,name:"Nimal",Age:29});
+
+    // batch.commit().then(res =>{
+    //     console.log("Batch data Run")
+    // });
+
+
+    //delete
+
+    db.collection("employee").doc("1").delete().then(res => {
+        console.log("Document deleted")
+    })
+ 
+
+//////faker
+var admin = require("firebase-admin");
+const {faker} = require('@faker-js/faker');
+var serviceAccount = require("./serviceAccountKeys.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+//npm install @faker-js/faker --save-dev
+//node ./index.js
+
+const db = admin.firestore();
+
+for(let index = 1; index < 15; index++){
+  db.collection("Today").doc(index.toString()).set({
+    id: index,
+    name: faker.person.firstName(),
+    gender: faker.person.sex(),
+    birthday: faker.date.birthdate(),
+    job: faker.person.jobArea(),
+  })
+}
+
+// db.collection("Today"
+//   .orderBy('id')
+//   .startAt(5)
+//   .get()
+//   .then(snapshot=> {
+//     snapshot.forEach(element => {
+//       console.log(element.data().name);
+//     });
+//   })
+//   .catch(error =>{
+//     console.error("Error retrieving data: ", error)
+//   });

@@ -1,0 +1,124 @@
+Mongoimport
+mongoimport --jsonArray --db school --collection studentdetails --file data.json
+
+filter with two columns
+db.studentdetails.find({},{std_ID:1,name:1})
+
+without _id
+db.studentdetails.find({},{_id:0,std_ID:1,name:1})
+
+first 5 data set
+db.studentdetails.find({}).limit(5)
+
+ascendinding sort by id
+db.studentdetails.find({}).sort({std_ID:1}).limit(5)
+
+ascending sort and skip
+db.studentdetails.find({}).sort({std_ID:1}).skip(5)
+
+and condition
+db.studentdetails.find({$and:[{city:"Dallas"},{std_ID:9}]})
+
+less than
+db.studentdetails.find({age:{$lt:25}})
+
+decending
+db.studentdetails.find({}).sort({"std_ID":-1})
+
+and condition filter
+db.studentdetails.find({$and:[{age:20},{city:"Chicago"}]},{name:1})
+
+update name only
+db.studentdetails.update({name:"Alice Johnson"},{$set:{name:"John"}})
+
+delete entire column
+db.studentdetails.updateMany({},{$unset:{marks:1}})
+
+> db.Book.insertMany([{Item:"Book",Quantity:25,Status:"A"},
+... {Item:"Article",Quantity:18,Status:"B"},
+... {Item:"NoteBook",Quantity:31,Status:"A"},
+... {Item:"Journal",Quantity:19,Status:"D"},
+... {Item:"Postcard",Quantity:30,Status:"A"}])
+
+Quantity is less than 20
+> db.Book.find({Quantity:{$lt:20}})
+
+status equals A and Qunatity is greater than equal 30
+> db.Book.find({$and:[{Status: {$eq:"A"}},{Quantity:{$gte:30}}]})
+
+Qunatity is greater than 25 and whose item is PostCard
+> db.Book.find({$and:[{Quantity: {$gt:25}},{Item:{$eq:"Postcard"}}]})
+
+qunatity is not equal 18
+> db.Book.find({Quantity:{$ne:18}})
+
+getting items names start with "J"
+db.Book.find({Item: /^J/})
+
+> db.Book.find({Item:/^B/})
+
+> db.Book.find({Item:/k$/})
+
+> db.Book.find({$and:[{Item:/^B/},{Item:/k$/}]})
+
+> db.Book.find({$and:[{Item:/^J/},{Item:/l$/}]})
+
+Basic
+
+show dbs						//show all databases
+db							//current database
+use shop						//creating a database	//switching a database
+db.createCollection("product")				//creating a collection
+show collections					//show collections
+db.product.insert({name: "ABC"})			//insert only
+db.product.insertOne({name: "ABC"})			//insert one
+db.product.insertOne({name: "ABC", age: 23})		//insert one row
+db.product.find()					//display
+db.customer.insertMany([{name: "pqr", age: 25},{name: "abc", age: 22}])		//insert many
+db.customer.update({cus_id: 10}, {$set:{cus_id: 20}})				//update
+db.getCollection("customer").drop()			//drop collection
+db.drop Database()					//drop database
+
+Comparism opertaions	/	Logical operations
+
+db.book.find({status: {$eq: "A"}})			//equal
+db.book.find({Quantity: {$lt: 20}})			//less than
+db.book.find({$and: [{status: {$eq: "A"}},{Quantity: {$gte: 30}}]})	//and operation
+db.book.find({$or: [{Quantity: {$nq: 18}},{Quantity: {$nq: 19}}]})	//or operation
+db.book.find({Item: /^J/})				//display start with J letter
+db.book.find({Item: /E$/})				//dispaly End with E letter
+
+
+db.employee.update({}, {$set: {email: 1}}, false, true)		//add new field for entire document
+db.employee.update({empId: 1}, {$set: {address: "oluvil"}})	//add new field for only one document
+db.employee.update({empId: 1}, {$unset: {address: "oluvil"}})	//remove field for only one document
+db.employee.update({}, {$unset: {email: 1}}, false, true)	//remove field from entire document
+db.employee.updateMany({}, {$unset: {email: 1}})		//another method for remove field from entire document
+
+projection
+
+db.employee.find({}, {empId: 1, empName: 1})			//display only two field
+db.employee.find({}, {_id: 0, empId: 1, empName: 1})		//to not appear objectid
+
+
+Aggregation
+
+db.order.find({size: "medium"})				//medium size
+db.order.aggregate({$match: {size: "medium"}})		//medium size
+db.order.aggregate({$match: {ISODate: {$lte: ISODate("2023-01-01"), $gte: ISODate("2021-01-01")}}})		//less than equal and greater than equal
+db.order.aggregate([{$match: {size: "medium"}}, {$group: {_id: "$name", totalQuality: {$sum: "$quantity"}}}])	//sum
+db.order.aggregate([{$match: {size: "medium"}}, {$group: {_id: "$name", totalQuality: {$sum: {$multiply: ["$quantity", "$price"]}}}}])	//sum and multiply
+
+
+
+
+
+
+
+
+
+
+
+
+
+
